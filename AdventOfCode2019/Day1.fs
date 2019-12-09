@@ -33,7 +33,7 @@ let run (file : string, testMode : bool) =
     if testMode then test else input
     |> List.map (allFuel 0)
     |> List.sum
-    |> printfn "Day 1, part 2: %A";
+    |> printfn "Day 1, part 2: %d";
 
     w.Stop();
     printfn "Time taken: %d ms" w.ElapsedMilliseconds;
