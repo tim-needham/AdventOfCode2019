@@ -3,25 +3,13 @@ module Day2
 open System;
 open System.Diagnostics;
 open System.IO;
-
-let substitute (v : int) (p : int) (is : int list) : int list = 
-    is
-    |> List.mapi (fun j x -> if j = p then v else x);
-
-let rec compute (p : int) (is : int list) : int =
-    match is.[p..] with
-    | 1 :: x :: y :: z :: _ ->  substitute (is.[x] + is.[y]) z is 
-                                |> compute (p+4);
-    | 2 :: x :: y :: z :: _ ->  substitute (is.[x] * is.[y]) z is 
-                                |> compute (p+4);
-    | 99 :: _ -> List.head is;
-    | _ -> failwithf "Error, unexpected Incode found or ran out of input";
+open IntCode;
 
 let rec solve (t : int) (i : int) (j : int) (is : int list) : int =
     let js =    is
                 |> substitute i 1
                 |> substitute j 2;
-    if compute 0 js = t then
+    if compute 0 [] js [] |> fst |> List.head = t then
         100 * i + j;
     else
         if i = j then
@@ -41,11 +29,13 @@ let run (file : string, testMode : bool) =
     let test = [ 1; 9; 10; 3; 2; 3; 11; 0; 99; 30; 40; 50 ];
 
     if testMode then 
-        test 
-    else    input
+        (test, []) 
+    else    (input
             |> substitute 12 1
-            |> substitute 2 2
-    |> compute 0
+            |> substitute 2 2, [])
+    ||> compute 0 []
+    |> fst
+    |> List.head
     |> printfn "Day 2, part 1: %d";
 
     let target = 19690720;
